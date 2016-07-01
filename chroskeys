@@ -1,8 +1,11 @@
 #!/bin/bash
 
-while :
-do
-	echo "test"
-	# echo $(sudo stdbuf -o0 od -tx1 /dev/input/event0 | stdbuf -o0 grep '.40 ' | stdbuf -o0 awk -Winteractive '{print $12}')
-	echo $(sudo od -tx1 /dev/input/event0)
-done
+	# sudo stdbuf -o0 od -tx1 /dev/input/event0 | stdbuf -o0 grep '.40 ' | stdbuf -o0 awk -Winteractive '{print $12}'
+	sudo stdbuf -o0 od -tx1 /dev/input/event0 | \
+	stdbuf -o0 awk -Winteractive '
+	$10 == "01" {
+		if ($14 == "01") {
+			print "Key pressed: "$12
+		}
+		else print "Key released: "$12
+	}' > keys
