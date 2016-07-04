@@ -2,12 +2,12 @@
 sudo stdbuf -o0 od -tx1 /dev/input/event0 | \
 stdbuf -o0 awk -Winteractive \
 	'$10 == "01" {
-		"date +%s.%3N" | getline d
 		if ($14 == "01") {
-			print "Key pressed: "$12" at time "d
+			print "pressed "$12
 		}
 		else if ($14 == "02") {
-			print "Key autorepeated: "$12
-		} else print "Key released: "$12" at time "d
+			print "autorepeated "$12
+		} else print "released "$12
 	}' \
+| while read line; do echo "$(date +%s.%3N) : $line"; done \
 > keys
