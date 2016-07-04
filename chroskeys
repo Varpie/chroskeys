@@ -1,11 +1,13 @@
 #!/bin/bash
-
-	# sudo stdbuf -o0 od -tx1 /dev/input/event0 | stdbuf -o0 grep '.40 ' | stdbuf -o0 awk -Winteractive '{print $12}'
-	sudo stdbuf -o0 od -tx1 /dev/input/event0 | \
-	stdbuf -o0 awk -Winteractive '
-	$10 == "01" {
+sudo stdbuf -o0 od -tx1 /dev/input/event0 | \
+stdbuf -o0 awk -Winteractive \
+	'$10 == "01" {
+		"date +%s.%3N" | getline d
 		if ($14 == "01") {
-			print "Key pressed: "$12
+			print "Key pressed: "$12" at time "d
 		}
-		else print "Key released: "$12
-	}' > keys
+		else if ($14 == "02") {
+			print "Key autorepeated: "$12
+		} else print "Key released: "$12" at time "d
+	}' \
+> keys
